@@ -1,0 +1,31 @@
+sequenceDiagram
+    participant User
+    participant Browser
+    participant JavaScript
+    participant Server
+
+  
+    Browser->>Server: GET https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+    activate Server
+    Server-->>Browser: HTML content
+    deactivate Server
+
+    Browser->>Server: GET https://studies.cs.helsinki.fi/exampleapp/new_note_spa/spa.js
+    activate Server
+    Server-->>Browser: spa.js
+    deactivate Server
+
+    Note right of Browser: Browser executes spa.js, sets up event handler for form submit
+
+    User->>Browser: Fills note and submits form
+    Browser->>JavaScript: onsubmit event triggered
+    JavaScript->>JavaScript: e.preventDefault()
+    JavaScript->>JavaScript: Create new note object {content, date}
+    JavaScript->>JavaScript: Add note to local array notes.push(note)
+    JavaScript->>JavaScript: Update DOM (redrawNotes)
+    JavaScript->>Server: POST /new_note_spa with JSON {content, date}
+    activate Server
+    Server-->>JavaScript: 201 Created
+    deactivate Server
+
+    Note right of Browser: Browser stays on same page, no reload occurs
